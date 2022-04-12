@@ -9,7 +9,9 @@ import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.sedat.catsapp.databinding.ActivitySplashScreenBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
 
