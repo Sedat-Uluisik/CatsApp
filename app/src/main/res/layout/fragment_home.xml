@@ -32,6 +32,7 @@
             android:layout_toEndOf="@id/logo_image"/>
 
         <ImageView
+            android:id="@+id/favorite_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/favorite_32"
@@ -46,7 +47,8 @@
         android:layout_height="wrap_content"
         android:padding="3dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
@@ -56,12 +58,14 @@
             style="@style/Widget.Shrine.TextInputLayout"
             android:hint="Search...">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/search_48"

@@ -13,10 +13,28 @@
         <action
             android:id="@+id/action_homeFragment_to_catDetailsFragment"
             app:destination="@id/catDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/catDetailsFragment"
         android:name="com.sedat.catsapp.fragment.CatDetailsFragment"
         android:label="fragment_cat_details"
-        tools:layout="@layout/fragment_cat_details" />
+        tools:layout="@layout/fragment_cat_details" >
+        <argument
+            android:name="cat_item"
+            app:argType="com.sedat.catsapp.model.CatItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.sedat.catsapp.fragment.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_catDetailsFragment"
+            app:destination="@id/catDetailsFragment" />
+    </fragment>
 </navigation>

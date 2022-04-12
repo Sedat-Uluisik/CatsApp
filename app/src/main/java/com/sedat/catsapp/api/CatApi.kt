@@ -16,4 +16,9 @@ interface CatApi {
         //@Header("x-api-key") apiKey: String = "eb572777-3a92-4cd4-9932-6767c362bea6"
     ): Response<List<CatItem>>
 
+    @GET("/v1/breeds/search")
+    suspend fun search(
+        @Query("q") query: String
+    ): Response<List<CatItem>>
+
 }
