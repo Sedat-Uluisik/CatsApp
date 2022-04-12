@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sedat.catsapp.R
@@ -56,7 +57,6 @@ class HomeFragment : Fragment() {
         binding.recyclerHome.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerHome.adapter = homeAdapter
 
-        //getCatList()
         viewModel.getData()
 
         var job: Job ?= null
@@ -77,6 +77,7 @@ class HomeFragment : Fragment() {
             if(isSearch){
                 viewModel.clearSearchItems()
                 viewModel.getData()
+                isSearch = false
             }
         }
 
@@ -117,6 +118,12 @@ class HomeFragment : Fragment() {
             if(it.isNotEmpty()){
                 homeAdapter.favorites = it
             }
+        }
+
+        homeAdapter.addLoadStateListener {
+            fragmentBinding?.progressBarHome?.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.VISIBLE else View.GONE
+            fragmentBinding?.recyclerHome?.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.GONE else View.VISIBLE
+
         }
 
         viewModel.catList.observe(viewLifecycleOwner){

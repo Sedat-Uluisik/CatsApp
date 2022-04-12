@@ -26,6 +26,8 @@ class CatDetailsFragment : Fragment() {
 
     private lateinit var viewModel: CatDetailsViewModel
 
+    private var isFavorite: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,14 +65,29 @@ class CatDetailsFragment : Fragment() {
         binding.catName.text = cat.name ?: "-----"
         binding.descriptionTxt.text = cat.description ?: "-----"
         binding.ratingEnergyLevel.rating = cat.energy_level!!.toFloat()
-        binding.groomingTxt.text = cat.grooming.toString()
+        binding.ratingAdaptability.rating = cat.adaptability!!.toFloat()
+        binding.ratingGrroming.rating = cat.grooming!!.toFloat()
         binding.lifeSpanTxt.text = cat.life_span.toString()
 
         viewModel.isFavorite(cat.id){
-            if(it)
+            if(it){
+                isFavorite = true
                 binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_32)
-            else
+            }
+            else{
+                isFavorite = false
                 binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_border_32)
+            }
+        }
+
+        binding.favoriteBtnDetails.setOnClickListener {
+            if(isFavorite){
+                viewModel.deleteCatFromRoom(cat.id)
+                binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_border_32)
+            }else{
+                viewModel.saveCatFromRoom(cat)
+                binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_32)
+            }
         }
     }
 

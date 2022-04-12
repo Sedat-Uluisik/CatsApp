@@ -1,5 +1,7 @@
 package com.sedat.catsapp.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sedat.catsapp.model.CatItem
@@ -9,23 +11,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CatDetailsViewModel @Inject constructor(
+class FavoritesFragmentViewModel @Inject constructor(
     private val repository: RepositoryCats
-): ViewModel(){
-    fun isFavorite(id: String, callBack: (Boolean)-> Unit){
+): ViewModel() {
+
+    private val cats = MutableLiveData<List<CatItem>>()
+    val catList: LiveData<List<CatItem>>
+        get() = cats
+    fun getDataFromRoom(){
         viewModelScope.launch {
-            val bool = repository.isFavorite(id)
-            callBack(bool)
+            val list = repository.getCatsFromRoom()
+            cats.value = list
         }
     }
 
-    fun saveCatFromRoom(catItem: CatItem){
+    fun deleteCatFromRoom(id: String){
         viewModelScope.launch {
-            repository.saveCatFromRoom(catItem)
+            repository.deleteCatFromRoom(id)
         }
     }
 
-    fun deleteCatFromRoom(id: String) =viewModelScope.launch {
-        repository.deleteCatFromRoom(id)
-    }
 }
