@@ -55,8 +55,6 @@ class CatDetailsFragment : Fragment() {
 
     private fun bind(cat: CatItem){
 
-        println("bind fun running in cat details fragment") //tek sefer
-
         glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(binding.catImageview)
 
         binding.catName.text = cat.name?.uppercase() ?: "-----"

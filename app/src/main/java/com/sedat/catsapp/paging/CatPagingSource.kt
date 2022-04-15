@@ -25,8 +25,6 @@ class CatPagingSource @Inject constructor(
             else
                 listOf()
 
-            println("load data from paging with api in CatPagingSource") //paging ile birden çok çalışabilir
-
             LoadResult.Page(
                 data = data,
                 prevKey = if (nextPage == 1) null else nextPage - 1,

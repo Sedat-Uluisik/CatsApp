@@ -20,9 +20,6 @@ class FavoritesFragmentViewModel @Inject constructor(
         get() = cats
     fun getDataFromRoom(){
         viewModelScope.launch {
-
-            println("get cats From room in favorites fragment viewModel") //tek sefer
-
             val list = repository.getCatsFromRoom()
             cats.value = list
         }
@@ -30,9 +27,6 @@ class FavoritesFragmentViewModel @Inject constructor(
 
     fun deleteCatFromRoomWithId(id: String){
         viewModelScope.launch {
-
-            println("delete cats From room in favorites fragment viewModel")
-
             repository.deleteCatFromRoom(id)
         }
     }

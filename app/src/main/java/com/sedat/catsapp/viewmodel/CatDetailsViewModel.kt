@@ -15,9 +15,6 @@ class CatDetailsViewModel @Inject constructor(
 
     fun isFavorite(id: String, callBack: (Boolean)-> Unit){
         viewModelScope.launch {
-
-            println("isFav kontrol in details viewModel") //tek sefer
-
             val bool = repository.isFavorite(id)
             callBack(bool)
         }
@@ -25,17 +22,11 @@ class CatDetailsViewModel @Inject constructor(
 
     fun saveCatFromRoom(catItem: CatItem){
         viewModelScope.launch {
-
-            println("save cat from romm in details viewModel")
-
             repository.saveCatFromRoom(catItem)
         }
     }
 
     fun deleteCatFromRoomWithId(id: String) =viewModelScope.launch {
-
-        println("delete cat from room in details viewModel")
-
         repository.deleteCatFromRoom(id)
     }
 }

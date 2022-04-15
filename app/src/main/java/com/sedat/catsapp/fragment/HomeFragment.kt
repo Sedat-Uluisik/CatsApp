@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -57,6 +56,8 @@ class HomeFragment : Fragment() {
         binding.recyclerHome.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerHome.adapter = homeAdapter
 
+        viewModel.getData()
+
         var job: Job ?= null
         binding.searchEdittext.addTextChangedListener { editable->
             job?.cancel()
@@ -105,14 +106,10 @@ class HomeFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun observeData(){
 
-        println("observe fun çalıştı in home fragment") //tek sefer
-
         viewModel.search.observe(viewLifecycleOwner){ searchList->
             if(searchList.isNotEmpty()){
                 viewModel.getCatsFromRoom {
                     lifecycleScope.launch {
-
-                        println("observe searching data from api in home fragment")
 
                         homeAdapter.favorites = it
                         homeAdapter.submitData(PagingData.from(searchList))
@@ -121,31 +118,20 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.getCatsFromRoom {
-
-            println("get cats from room in home fragment") //tek sefer
-
-            homeAdapter.favorites = it
-            viewModel.getData()
-        }
-
         homeAdapter.addLoadStateListener {
             binding.progressBarHome.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.VISIBLE else View.GONE
             binding.recyclerHome.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.GONE else View.VISIBLE
         }
 
-        viewModel.catList.observe(viewLifecycleOwner){
+        viewModel.catList.observe(viewLifecycleOwner){ catListFromApi->
+            viewModel.getCatsFromRoom {
 
-            //buradaki kontrol, findNavController().popBackStack() yapıldığında observe işleminin iki defa çalışmasını engelliyor.
-
-            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED){
                 lifecycleScope.launch {
-                    it.collectLatest {
+                    catListFromApi.collectLatest { pagingData->
 
-                        println("observe cat list from api in home fragment") //tek sefer
-
+                        homeAdapter.favorites = it
                         homeAdapter.submitData(PagingData.from(listOf()))
-                        homeAdapter.submitData(it)
+                        homeAdapter.submitData(pagingData)
                         homeAdapter.notifyDataSetChanged()
                     }
                 }

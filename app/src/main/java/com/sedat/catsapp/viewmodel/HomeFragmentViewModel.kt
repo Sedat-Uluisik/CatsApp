@@ -33,8 +33,6 @@ class HomeFragmentViewModel @Inject constructor(
             }
         ).flow.cachedIn(viewModelScope)
 
-        println("get cat list from api in hoome fragment viewModel") //tek sefer
-
         cats.value = data
     }
 
@@ -46,8 +44,6 @@ class HomeFragmentViewModel @Inject constructor(
         if(!query.isNullOrEmpty()){
             viewModelScope.launch {
 
-                println("search cat list from api in hoome fragment viewModel")
-
                 val data = repository.search(query)
                 if(data.data != null && data.data.isNotEmpty()){
                     searchData.value = data.data!!
@@ -57,33 +53,21 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     fun clearSearchItems(){
-
-        println("clear search items in hoome fragment viewModel")
-
         searchData.value = listOf()
     }
 
     fun saveCatFromRoom(catItem: CatItem){
         viewModelScope.launch {
-
-            println("sace cat from room in hoome fragment viewModel") //tek sefer
-
             repository.saveCatFromRoom(catItem)
         }
     }
     fun deleteCatFromRoomWithId(id: String) = viewModelScope.launch {
-
-        println("delete cat from room in hoome fragment viewModel")
-
         repository.deleteCatFromRoom(id)
     }
 
     fun getCatsFromRoom(callBack: (List<CatItem>) -> Unit){
         viewModelScope.launch {
             repository.getCatsFromRoom2 {
-
-                println("get cat list from room in hoome fragment viewModel") //tek sefer
-
                 callBack(it)
             }
         }
@@ -92,9 +76,6 @@ class HomeFragmentViewModel @Inject constructor(
     fun isFavorite(id: String, callBack: (Boolean)-> Unit){
         viewModelScope.launch {
             val bool = repository.isFavorite(id)
-
-            println("isFavorite kontrol in hoome fragment viewModel") //tek sefer
-
             callBack(bool)
         }
     }

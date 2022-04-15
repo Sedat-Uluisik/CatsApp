@@ -37,8 +37,6 @@ class SplashScreenActivity : AppCompatActivity() {
             finish()
         }
 
-        println("splash screen")
-
         Handler(Looper.getMainLooper()).postDelayed(runnable, 1700)
     }
 }

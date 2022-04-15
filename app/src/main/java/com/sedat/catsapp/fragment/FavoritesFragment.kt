@@ -65,16 +65,9 @@ class FavoritesFragment : Fragment() {
 
     private fun observeData(){
 
-        println("observe fun çalıştı in favorites fragment") //tek sefer
-
         viewModel.catList.observe(viewLifecycleOwner){
-            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) { //fragment açıldığında iki defa observe yapılması engellendi
-                lifecycleScope.launch {
-
-                    println("observe cat list from room in favorites fragment") //tek sefer
-
-                    adapter.submitData(PagingData.from(it))
-                }
+            lifecycleScope.launch {
+                adapter.submitData(PagingData.from(it))
             }
         }
     }
