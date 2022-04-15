@@ -5,7 +5,7 @@
 √ Dagger Hilt <br/>
 √ Retrofit <br/>
 √ MVVM <br/>
-√ Room Databae <br/>
+√ Room Database <br/>
 √ Coroutines <br/>
 √ Paging 3 <br/>
 
