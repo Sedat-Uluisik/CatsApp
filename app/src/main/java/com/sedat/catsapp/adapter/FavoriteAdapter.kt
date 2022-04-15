@@ -1,11 +1,9 @@
 package com.sedat.catsapp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -28,7 +26,6 @@ class FavoriteAdapter @Inject constructor(
         override fun areContentsTheSame(oldItem: CatItem, newItem: CatItem): Boolean {
             return oldItem == newItem
         }
-
     }
 
     private var onItemClickListener: ((CatItem) -> Unit) ?= null
@@ -41,36 +38,36 @@ class FavoriteAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val cat = getItem(position)!!
+        val cat = getItem(position)
 
         holder.item.apply {
-            name.text = "$position  ${cat!!.name}"
-            if(cat.image != null){
-                if(!cat.image.url.isNullOrEmpty())
-                    glide.load(cat.image.url).into(image)
+            name.text = "${cat?.name}"
+            if(cat?.image != null){
+                if(!cat.image?.url.isNullOrEmpty())
+                    glide.load(cat.image?.url).into(image)
                 else
                     if (!cat.reference_image_id.isNullOrEmpty())
                         glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(image)
             }
             //search işleminde api, resim ile ilgili herhangi bir bilgi vermiyor, bu nedenle ayriyetten reference_image_id ile resim alınıyor.
             else
-                if (!cat.reference_image_id.isNullOrEmpty())
-                    glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(image)
-                    //glide.load("https://cdn2.thecatapi.com/images/${cat.reference_image_id}.jpg").into(image)
-
+                if (!cat?.reference_image_id.isNullOrEmpty())
+                    glide.load("$IMAGE_URL/${cat?.reference_image_id}.jpg").into(image)
 
             favoriteBtnItemLayout.setImageResource(R.drawable.favorite_32)
         }
 
         holder.itemView.setOnClickListener {
             onItemClickListener?.let {
-                it(cat)
+                if(cat != null)
+                    it(cat)
             }
         }
 
         holder.item.favoriteBtnItemLayout.setOnClickListener {
             onFavoriteBtnClickListener?.let {
-                it(cat, holder.item.favoriteBtnItemLayout)
+                if(cat != null)
+                    it(cat, holder.item.favoriteBtnItemLayout)
             }
         }
     }

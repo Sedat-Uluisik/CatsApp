@@ -11,8 +11,8 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="5dp"
-        android:paddingEnd="7dp"
+        android:padding="7dp"
+        android:background="@drawable/background_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -39,7 +39,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/background">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,11 +50,16 @@
 
             <TextView
                 android:id="@+id/cat_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="cat name"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:gravity="center_horizontal"
+                android:text="CAT NAME"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:layout_margin="7dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:fontFamily="@font/organic_relief"/>
 
             <ImageView
                 android:id="@+id/cat_imageview"
@@ -72,7 +78,11 @@
                     android:id="@+id/description_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="description"/>
+                    android:text="description"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:fontFamily="monospace"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -83,8 +93,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="energy level: "
-                        android:textStyle="bold"/>
+                        android:text="@string/energy_level"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
                     <RatingBar
                         android:id="@+id/rating_energy_level"
                         android:layout_width="wrap_content"
@@ -92,6 +104,8 @@
                         android:numStars="5"
                         android:stepSize="0.5"
                         android:isIndicator="true"
+                        android:progressTint="#FFCC00"
+                        android:secondaryProgressTint="#FFCC00"
                         style="@style/Widget.AppCompat.RatingBar.Small"/>
                 </LinearLayout>
 
@@ -104,8 +118,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Grooming: "
-                        android:textStyle="bold"/>
+                        android:text="@string/grooming"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
                     <RatingBar
                         android:id="@+id/rating_grroming"
                         android:layout_width="wrap_content"
@@ -113,6 +129,8 @@
                         android:numStars="5"
                         android:stepSize="0.5"
                         android:isIndicator="true"
+                        android:progressTint="#FFCC00"
+                        android:secondaryProgressTint="#FFCC00"
                         style="@style/Widget.AppCompat.RatingBar.Small"/>
                 </LinearLayout>
 
@@ -124,13 +142,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Life span: "
-                        android:textStyle="bold"/>
+                        android:text="@string/life_span"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
                     <TextView
                         android:id="@+id/life_span_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="life span"/>
+                        android:text="life span"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -142,8 +164,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Adaptability: "
-                        android:textStyle="bold"/>
+                        android:text="@string/adaptability"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
                     <RatingBar
                         android:id="@+id/rating_adaptability"
                         android:layout_width="wrap_content"
@@ -151,6 +175,8 @@
                         android:numStars="5"
                         android:stepSize="0.5"
                         android:isIndicator="true"
+                        android:progressTint="#FFCC00"
+                        android:secondaryProgressTint="#FFCC00"
                         style="@style/Widget.AppCompat.RatingBar.Small"/>
                 </LinearLayout>
 

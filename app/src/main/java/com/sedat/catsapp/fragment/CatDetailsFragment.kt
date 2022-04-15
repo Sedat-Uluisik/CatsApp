@@ -11,6 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.sedat.catsapp.R
 import com.sedat.catsapp.databinding.FragmentCatDetailsBinding
 import com.sedat.catsapp.model.CatItem
+import com.sedat.catsapp.util.Util.IMAGE_URL
 import com.sedat.catsapp.viewmodel.CatDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,16 +54,12 @@ class CatDetailsFragment : Fragment() {
     }
 
     private fun bind(cat: CatItem){
-        if(cat.image != null)
-            if(cat.image.url != "")
-                glide.load(cat.image.url).into(binding.catImageview)
-            else
-                binding.catImageview.setImageResource(R.drawable.error_24)
-        else
-            if (!cat.reference_image_id.isNullOrEmpty())
-                glide.load("https://cdn2.thecatapi.com/images/${cat.reference_image_id}.jpg").into(binding.catImageview)
 
-        binding.catName.text = cat.name ?: "-----"
+        println("bind fun running in cat details fragment") //tek sefer
+
+        glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(binding.catImageview)
+
+        binding.catName.text = cat.name?.uppercase() ?: "-----"
         binding.descriptionTxt.text = cat.description ?: "-----"
         binding.ratingEnergyLevel.rating = cat.energy_level!!.toFloat()
         binding.ratingAdaptability.rating = cat.adaptability!!.toFloat()
@@ -82,11 +79,13 @@ class CatDetailsFragment : Fragment() {
 
         binding.favoriteBtnDetails.setOnClickListener {
             if(isFavorite){
-                viewModel.deleteCatFromRoom(cat.id)
+                viewModel.deleteCatFromRoomWithId(cat.id)
                 binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_border_32)
+                isFavorite = false
             }else{
                 viewModel.saveCatFromRoom(cat)
                 binding.favoriteBtnDetails.setImageResource(R.drawable.favorite_32)
+                isFavorite = true
             }
         }
     }

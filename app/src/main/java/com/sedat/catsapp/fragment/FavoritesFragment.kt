@@ -1,11 +1,11 @@
 package com.sedat.catsapp.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -13,7 +13,6 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sedat.catsapp.R
 import com.sedat.catsapp.adapter.FavoriteAdapter
-import com.sedat.catsapp.adapter.HomeAdapter
 import com.sedat.catsapp.databinding.FragmentFavoritesBinding
 import com.sedat.catsapp.viewmodel.FavoritesFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,18 +56,25 @@ class FavoritesFragment : Fragment() {
             findNavController().navigate(FavoritesFragmentDirections.actionFavoritesFragmentToCatDetailsFragment(it))
         }
         adapter.favoriteBtnClick { catItem, fav_btn->
-            viewModel.deleteCatFromRoom(catItem.id)
+            viewModel.deleteCatFromRoomWithId(catItem.id)
             fav_btn.setImageResource(R.drawable.favorite_border_32)
         }
 
         observeData()
-
     }
 
     private fun observeData(){
+
+        println("observe fun çalıştı in favorites fragment") //tek sefer
+
         viewModel.catList.observe(viewLifecycleOwner){
-            lifecycleScope.launch {
-                adapter.submitData(PagingData.from(it))
+            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) { //fragment açıldığında iki defa observe yapılması engellendi
+                lifecycleScope.launch {
+
+                    println("observe cat list from room in favorites fragment") //tek sefer
+
+                    adapter.submitData(PagingData.from(it))
+                }
             }
         }
     }

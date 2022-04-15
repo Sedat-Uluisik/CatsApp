@@ -1,7 +1,6 @@
 package com.sedat.catsapp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
@@ -12,6 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.sedat.catsapp.R
 import com.sedat.catsapp.databinding.CatItemLayoutBinding
 import com.sedat.catsapp.model.CatItem
+import com.sedat.catsapp.model.Image
 import com.sedat.catsapp.util.Util.IMAGE_URL
 import javax.inject.Inject
 
@@ -28,35 +28,39 @@ class HomeAdapter @Inject constructor(
         override fun areContentsTheSame(oldItem: CatItem, newItem: CatItem): Boolean {
             return oldItem == newItem
         }
-
     }
 
     private val recyclerListDiffer = AsyncListDiffer(this, diffUtil())
-    var favorites: List<CatItem>
+    var favorites: List<CatItem> //favori kontrolü için kullanılıyor.
         get() = recyclerListDiffer.currentList
         set(value) = recyclerListDiffer.submitList(value)
 
-    private var onItemClickListener: ((CatItem) -> Unit) ?= null
-    fun catItemClick(listener: (CatItem)-> Unit){
+    private var onItemClickListener: ((CatItem?) -> Unit) ?= null
+    fun catItemClick(listener: (CatItem?)-> Unit){
         onItemClickListener = listener
     }
-    private var onFavoriteBtnClickListener: ((CatItem, ImageView)->Unit) ?= null
-    fun favoriteBtnClick(listener: (CatItem, ImageView)-> Unit){
+    private var onFavoriteBtnClickListener: ((CatItem?, ImageView)->Unit) ?= null
+    fun favoriteBtnClick(listener: (CatItem?, ImageView)-> Unit){
         onFavoriteBtnClickListener = listener
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val cat = getItem(position)!!
+        val cat = getItem(position)
 
-        val check = favorites.map {
-            it.id
-        }.contains(cat.id)
+        val check = if(favorites.isNotEmpty()){
+            favorites.map {
+                it.id
+            }.contains(cat?.id)
+        }else
+            false
+
+        val imageUrl = "$IMAGE_URL/${cat?.reference_image_id}.jpg"
 
         holder.item.apply {
-            name.text = "$position  ${cat!!.name}"
+            name.text = "${cat!!.name}"
             if(cat.image != null){
-                if(!cat.image.url.isNullOrEmpty())
-                    glide.load(cat.image.url).into(image)
+                if(!cat.image?.url.isNullOrEmpty())
+                    glide.load(cat.image?.url).into(image)
                 else
                     if (!cat.reference_image_id.isNullOrEmpty())
                         glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(image)
@@ -64,8 +68,7 @@ class HomeAdapter @Inject constructor(
             //search işleminde api, resim ile ilgili herhangi bir bilgi vermiyor, bu nedenle ayriyetten reference_image_id ile resim alınıyor.
             else
                 if (!cat.reference_image_id.isNullOrEmpty())
-                    glide.load("$IMAGE_URL/${cat.reference_image_id}.jpg").into(image)
-                    //glide.load("https://cdn2.thecatapi.com/images/${cat.reference_image_id}.jpg").into(image)
+                    glide.load(imageUrl).into(image)
 
             if(check)
                 favoriteBtnItemLayout.setImageResource(R.drawable.favorite_32)
@@ -75,6 +78,8 @@ class HomeAdapter @Inject constructor(
 
         holder.itemView.setOnClickListener {
             onItemClickListener?.let {
+                if(cat?.image == null)
+                    cat?.image = Image(0, "", imageUrl)
                 it(cat)
             }
         }

@@ -1,12 +1,13 @@
 package com.sedat.catsapp.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -37,9 +38,10 @@ class HomeFragment : Fragment() {
 
     private var isSearch: Boolean = false
 
-    //api_key = eb572777-3a92-4cd4-9932-6767c362bea6
-    //cat list = https://api.thecatapi.com/v1/breeds
-    //search = https://api.thecatapi.com/v1/breeds/search  q=kedi_adı
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[HomeFragmentViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,12 +54,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity())[HomeFragmentViewModel::class.java]
-
-        binding.recyclerHome.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerHome.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerHome.adapter = homeAdapter
-
-        viewModel.getData()
 
         var job: Job ?= null
         binding.searchEdittext.addTextChangedListener { editable->
@@ -76,7 +74,7 @@ class HomeFragment : Fragment() {
         binding.searchIcon.setOnClickListener {
             if(isSearch){
                 viewModel.clearSearchItems()
-                viewModel.getData()
+                observeData()
                 isSearch = false
             }
         }
@@ -89,61 +87,71 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCatDetailsFragment(it))
         }
         homeAdapter.favoriteBtnClick { catItem, fav_btn->
-            viewModel.isFavorite(catItem.id){
-                if(it){
-                    viewModel.deleteCatFromRoom(catItem.id)
-                    fav_btn.setImageResource(R.drawable.favorite_border_32)
-                }else{
-                    viewModel.saveCatFromRoom(catItem)
-                    fav_btn.setImageResource(R.drawable.favorite_32)
-                }
-            }
+           if(catItem != null){
+               viewModel.isFavorite(catItem.id){
+                   if(it){
+                       viewModel.deleteCatFromRoomWithId(catItem.id)
+                       fav_btn.setImageResource(R.drawable.favorite_border_32)
+                   }else{
+                       viewModel.saveCatFromRoom(catItem)
+                       fav_btn.setImageResource(R.drawable.favorite_32)
+                   }
+               }
+           }
         }
-
-        viewModel.getCatsFromRoom()
-
         observeData()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeData(){
-        viewModel.search.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                lifecycleScope.launch {
-                    homeAdapter.submitData(PagingData.from(it))
+
+        println("observe fun çalıştı in home fragment") //tek sefer
+
+        viewModel.search.observe(viewLifecycleOwner){ searchList->
+            if(searchList.isNotEmpty()){
+                viewModel.getCatsFromRoom {
+                    lifecycleScope.launch {
+
+                        println("observe searching data from api in home fragment")
+
+                        homeAdapter.favorites = it
+                        homeAdapter.submitData(PagingData.from(searchList))
+                    }
                 }
             }
         }
 
-        viewModel.catListFromRoom.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                homeAdapter.favorites = it
-            }
+        viewModel.getCatsFromRoom {
+
+            println("get cats from room in home fragment") //tek sefer
+
+            homeAdapter.favorites = it
+            viewModel.getData()
         }
 
         homeAdapter.addLoadStateListener {
-            fragmentBinding?.progressBarHome?.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-            fragmentBinding?.recyclerHome?.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.GONE else View.VISIBLE
-
+            binding.progressBarHome.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.VISIBLE else View.GONE
+            binding.recyclerHome.visibility = if(homeAdapter.itemCount == 0 || it.refresh is LoadState.Loading) View.GONE else View.VISIBLE
         }
 
         viewModel.catList.observe(viewLifecycleOwner){
-            lifecycleScope.launch {
-                it.collectLatest {
-                    homeAdapter.submitData(PagingData.from(listOf()))
-                    homeAdapter.submitData(it)
+
+            //buradaki kontrol, findNavController().popBackStack() yapıldığında observe işleminin iki defa çalışmasını engelliyor.
+
+            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED){
+                lifecycleScope.launch {
+                    it.collectLatest {
+
+                        println("observe cat list from api in home fragment") //tek sefer
+
+                        homeAdapter.submitData(PagingData.from(listOf()))
+                        homeAdapter.submitData(it)
+                        homeAdapter.notifyDataSetChanged()
+                    }
                 }
             }
         }
     }
-
-    /*private fun getCatList(){
-        lifecycleScope.launch {
-            viewModel.catList().collectLatest {
-                homeAdapter.submitData(PagingData.from(listOf()))
-                homeAdapter.submitData(it)
-            }
-        }
-    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()

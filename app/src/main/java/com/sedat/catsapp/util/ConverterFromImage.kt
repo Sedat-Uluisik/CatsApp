@@ -5,8 +5,8 @@ import com.sedat.catsapp.model.Image
 
 class ConverterFromImage {
     @TypeConverter
-    fun fromImage(image: Image): String{
-        return image.url.toString()
+    fun fromImage(image: Image?): String{
+        return image?.url ?: ""
     }
 
     @TypeConverter

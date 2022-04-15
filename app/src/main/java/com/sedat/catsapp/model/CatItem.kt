@@ -23,7 +23,7 @@ data class CatItem(
     val hypoallergenic: Int ?= null,
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val image: Image ?= null,
+    var image: Image ?= null,
     val indoor: Int ?= null,
     val intelligence: Int ?= null,
     val lap: Int ?= null,

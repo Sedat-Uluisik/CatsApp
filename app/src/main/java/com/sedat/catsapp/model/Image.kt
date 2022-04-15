@@ -3,8 +3,8 @@ package com.sedat.catsapp.model
 import java.io.Serializable
 
 data class Image(
-    val height: Int ?= null,
-    val id: String ?= null,
-    val url: String ?= null,
-    val width: Int ?= null
+    var height: Int ?= null,
+    var id: String ?= null,
+    var url: String ?= null,
+    var width: Int ?= null
 ): Serializable

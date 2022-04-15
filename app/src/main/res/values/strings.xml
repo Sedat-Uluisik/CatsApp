@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">CatsApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="adaptability">Adaptability: </string>
+    <string name="cats">Cats</string>
+    <string name="energy_level">Energy level: </string>
+    <string name="favorites">Favorites</string>
+    <string name="grooming">Grooming: </string>
+    <string name="life_span">Life span: </string>
+    <string name="search">Search… </string>
 </resources>
